@@ -1,0 +1,138 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "New Rental ";
+}
+ 
+<h2>Rental</h2>
+<form id="Rental" method="post">
+	<div class="form-group">
+		<label for="subscriber">Subscriber</label>
+		<div class="tt-container">
+			<input type="text" name="subscriber" required data-validSubscriber="true" id="subscriber" value="" class="form-control" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="activity">Activity</label>
+		<div class="tt-container">
+			<input type="text"  name="activity" data-atLeastOneActivity="true" id="activity" value="" class="form-control" />
+		</div>
+    </div>
+
+	<div class="row">
+		<div class="col-md-4 col-sm-4">
+			<ul class="list-group" id="activities"></ul>
+		</div>
+	</div>
+
+	<button class="btn btn-def Btn" type="submit">Submit</button>
+
+</form>
+@section scripts 
+{
+	@Scripts.Render("~/bundles/jqueryval")
+	<script>
+
+		$(document).ready(function () {
+
+			//array to save data of subscribers&activities in it
+			var viewmodel = {
+				SubscriberId :"",
+				ActivityIds :[]
+			};
+
+			//autocomplete from typeahead to subscribers
+			var subscriber = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				remote: {
+					url: '/api/Subscribers?query=%QUERY',
+					wildcard: '%QUERY'
+				}
+			});
+
+			$('#subscriber').typeahead({
+				highlight: true,
+				minLength:3
+			},
+			{
+				name: 'subscriber',
+				display: 'name',
+				source: subscriber
+				}).on("typeahead:select", function (e, subscriber) {
+					viewmodel.SubscriberId = subscriber.id;
+			});
+
+			//autocomplete from typeahead to activities
+			var activity = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				remote: {
+					url: '/api/FormaActivities?query=%QUERY',
+					wildcard: '%QUERY'
+				}
+			});
+
+			$('#activity').typeahead({
+				highlight: true,
+				minLength: 3
+			},
+			{
+				name: 'activity',
+				display: 'name',
+				source: activity
+
+			}).on("typeahead:select", function (e ,activity) {
+				$('#activities').append("<li class='list-group-item'>" + activity.name + "</li>");
+				$('#activity').typeahead("val","");
+				viewmodel.ActivityIds.push(activity.id);
+			});
+
+			//custom validation to subscriber
+			
+			$.validator.addMethod("validSubscriber", function () {
+				return viewmodel.SubscriberId && viewmodel.SubscriberId !== 0;
+			}, "Please Select a valid subscriber");
+
+			//custom validation to activity
+			$.validator.addMethod("atLeastOneActivity", function () {
+				return viewmodel.ActivityIds.length > 0;
+			}, "Please select at least one activity");
+
+			//to check validation first before submitting the form
+			var validator = $('#Rental').validate({
+				submitHandler: function () {
+
+					$.ajax({
+
+						url: '/api/NewRental',
+						method: 'POST',
+						data: viewmodel,
+					
+						success: function () {
+							toastr.success("Rentals are added");
+
+							//to return fields empty again after adding values
+							$('#subscriber').typeahead("val", "");
+							$('#activity').typeahead("val", "");
+							$('#activities').empty();
+
+							viewmodel = { ActivityIds: [] };
+							validator.resetForm();
+
+						},
+						error: function () {
+							toastr.error("Something went wrong");
+						}
+					});
+				
+					//to prevent default
+					return false;
+				}
+			});
+		
+		});
+	</script>
+	
+}
+

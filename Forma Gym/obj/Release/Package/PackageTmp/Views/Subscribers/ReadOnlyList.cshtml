@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Forma_Gym.Models.Subscriber>
+
+@{
+	ViewBag.Title = "Trainers";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+
+	<div class="row SubscriberData">
+
+	</div>
+</div>
+
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			$.ajax({
+				url: "/api/Subscribers",
+				method: "GET",
+
+				success: function (data) {
+					for (i = 0; i < data.length; i++) {
+						var SubscriberName = $("<div class='col-md-4 col4'>\
+												<h2>" + data[i].name + "</h2>\
+												<button class='btn show'>Show Details</button>\
+												<ul class='HiddenList'><span class='pp'>Subscription </span>:<li>"+ data[i].subscription.name + "</li>\
+												<span class='pp'>Birth Date</span>:<li class='birth' >"+ data[i].birthDate.split('T')[0] + "</li>\
+												<ul></div>");
+						$(".row").append(SubscriberName);
+					}
+				},
+				error: function (err) {
+					alert(err);
+				}
+			});
+			$(".row").on("click", ".show", function (e) {
+				e.preventDefault();
+				$(this).next().slideToggle();
+			});
+
+		});
+	</script>
+}
+

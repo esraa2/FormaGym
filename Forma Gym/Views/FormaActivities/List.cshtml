@@ -1,0 +1,106 @@
+﻿@model IEnumerable<Forma_Gym.Models.FormaActivity>
+
+@{
+	ViewBag.Title = "Activities";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Activities</h2>
+
+<p>
+	@Html.ActionLink("Add Activity", "Create", "FormaActivities", null, new { @class = "btn btn-primary" })
+</p>
+<table id="Activities" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th>Activities</th>
+			<th>Trainer Name</th>
+			<th>Class Duration</th>
+			<th>Class Type</th>
+			<th>Delete</th>
+		</tr>
+	</thead>
+	<tbody>
+		@*@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Class.Type)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.TrainerName)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.ClassDuration)
+				</td>
+				<td>
+					@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+					@Html.ActionLink("Details", "Details", new { id = item.Id }) |
+					@Html.ActionLink("Delete", "Delete", new { id = item.Id })
+				</td>
+			</tr>
+		}*@
+
+	</tbody>
+</table>
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			var table = $("#Activities").DataTable({
+				ajax: {
+					url: "/api/FormaActivities",
+					dataSrc: ""
+				},
+				columns: [
+					{
+						data: "name",
+						render: function (data, type, FormaActivity) {
+							return "<a href='/FormaActivities/Details/" + FormaActivity.id + "'>" + data + "</a>";
+						}
+					},
+					{
+						data: "trainerName"
+					},
+					{
+						data: "classDuration"
+					},
+					{
+						data: "class.type"
+					},
+					{
+						data: "id",
+						render: function (data) {
+							return "<button class='btn btn-def btn-link js-delete glyphicon glyphicon-trash' data_Activity_Id=" + data + "></button>";
+						}
+					}
+				]
+			});
+			$("#Activities").on("click", ".js-delete", function () {
+				var button = $(this);
+				bootbox.confirm("Are you sure to delete this Activity?", function (result) {
+					if (result) {
+						$.ajax({
+							method: "DELETE",
+							url: "/api/FormaActivities/" + button.attr("data_Activity_Id"),
+							success: function () {
+								table.row(button.parents("tr")).remove().draw();
+							}
+						});
+					}
+				});
+			});
+		});
+
+
+	</script>
+
+
+}
+
+
+
+

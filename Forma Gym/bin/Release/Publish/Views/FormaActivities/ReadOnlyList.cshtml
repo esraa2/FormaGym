@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Forma_Gym.Models.FormaActivity>
+
+@{
+	ViewBag.Title = "Activities";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<h2 class="ActivityHeader">Activities</h2>*@
+
+
+<div class="container">
+
+	<div class="row ActivitiesData">
+		
+	</div>
+</div>
+
+@section scripts
+{
+	<script>
+		$(document).ready(function () { 
+			$.ajax({
+				url: "/api/FormaActivities",
+				method: "GET",
+
+				success: function (data) {
+					for (i = 0; i < data.length; i++) {
+						var ActivityName = $("<div class='col-md-4 col4'>\
+											<h2>" + data[i].name + "</h2>\
+											<button class='btn show'>Show Details</button>\
+											<ul class='hiddenList'><span class='p'>Class </span>:<li>"+ data[i].class.type + "</li>\
+											<span class='p'>Trainer</span>:<li>"+ data[i].trainerName+"</li>\
+											<span class='p'>Duration</span>:<li>"+ data[i].classDuration+"Hr</li>\
+											<ul></div>");
+						$(".row").append(ActivityName);
+					}
+				},
+				error: function (err) {
+					alert(err);
+				}
+			});
+			
+			$(".row").on("click", ".show", function (e) {
+				e.preventDefault();
+				$(this).next().slideToggle();
+				//$(this).css("color","white");
+			});
+
+		});
+	</script>
+}
+
+
+

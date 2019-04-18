@@ -1,0 +1,64 @@
+﻿@model Forma_Gym.ViewModel.FormaActivityAndClasses
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm("Create","FormaActivities")) 
+{
+    @Html.AntiForgeryToken()
+    
+<div class="form-horizontal">
+	<hr />
+	@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+	<div class="form-group">
+		@Html.LabelFor(model => model.FormaActivity.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.FormaActivity.Name, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.FormaActivity.Name, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.FormaActivity.TrainerName, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.FormaActivity.TrainerName, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.FormaActivity.TrainerName, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.FormaActivity.ClassDuration, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.TextBoxFor(model => model.FormaActivity.ClassDuration, new { @class = "form-control" })
+			@Html.ValidationMessageFor(model => model.FormaActivity.ClassDuration, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.FormaActivity.ClassId, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.DropDownListFor(model => model.FormaActivity.ClassId, new SelectList(Model.Classes, "Id", "Type"), "Select Class Type", new { @class = "form-control" })
+			@Html.ValidationMessageFor(model => model.FormaActivity.ClassId, "", new { @class = "text-danger" })
+		</div>
+	</div>
+	@Html.HiddenFor(c => c.FormaActivity.Id)
+	<div class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			<input type="submit" value="Save" class="btn btn-def Btn" />
+		</div>
+	</div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Forma_Gym.Models.Subscriber>
+
+@{
+	ViewBag.Title = "Trainers";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Trainers List</h2>
+
+<p>
+	@Html.ActionLink("Add Trainer", "Create","Subscribers" , null, new {@class="btn btn-primary" })
+</p>
+<table id="subscribers" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th>Subscribers</th>
+			<th>Subscription Type</th>
+			<th>Delete</th>
+		</tr>
+	</thead>
+	<tbody>
+		@*@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.Subscription.Name)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Name)
+					</td>
+					<td>
+						@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+						@Html.ActionLink("Details", "Details", new { id = item.Id }) |
+						@Html.ActionLink("Delete", "Delete", new { id = item.Id })
+					</td>
+				</tr>
+			}*@
+
+	</tbody>
+</table>
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			var table = $("#subscribers").DataTable({
+				ajax: {
+					url: "/api/Subscribers",
+					dataSrc: ""
+				},
+				columns: [
+					{
+						data: "name",
+						render: function (data, type, subscriber) {
+							return "<a href='/Subscribers/Details/" + subscriber.id + "'>" + data + "</a>";
+						}
+					},
+					{
+						data: "subscription.name"
+					},
+					{
+						data: "id",
+						render: function (data) {
+							return "<button class='btn btn-def btn-link js-delete glyphicon glyphicon-trash' data-Id=" + data + "></button>";
+						}
+					}
+				]
+			});
+			$("#subscribers").on("click", ".js-delete", function () {
+				var button = $(this);
+				bootbox.confirm("Are you sure to delete this subscriber?", function (result) {
+					if (result) {
+						$.ajax({
+							method: "DELETE",
+							url: "/api/Subscribers/" + button.attr("data-Id"),
+							success: function () {
+								table.row(button.parents("tr")).remove().draw();
+							}
+						});
+					}
+				});
+			});
+		});
+
+
+	</script>
+
+
+}
+
+
+
+

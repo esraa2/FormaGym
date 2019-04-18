@@ -1,0 +1,35 @@
+﻿@model Forma_Gym.Models.FormaActivity
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+
+    <hr />
+	<ul class="ActivitiesList">
+
+		<li>
+			Activity : @Html.DisplayFor(model => model.Name)
+		</li>
+	
+		<li>
+			Genre : @Html.DisplayFor(model => model.Class.Type)
+		</li>
+		
+		<li>
+			Trainer Name: @Html.DisplayFor(model => model.TrainerName)
+		</li>
+	
+		<li>
+			Class Duration : @Html.DisplayFor(model => model.ClassDuration)
+		</li>
+
+	</ul>
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,22 @@
+﻿@model Forma_Gym.Models.Subscriber
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+
+    <hr />
+	<ul class="TrainerList">
+		<li>Trainer Name : @Html.DisplayFor(model => model.Name)</li>
+		<li>Subscription : @Html.DisplayFor(model => model.Subscription.Name)</li>
+		<li>Birth Date   : @Model.BirthDate</li>
+	</ul>
+            
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
